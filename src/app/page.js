@@ -11,12 +11,29 @@ import BackspaceIcon from "@mui/icons-material/Backspace";
 export default function Home() {
   const [result, setResult] = useState("0");
 
-  const handleButtonClick = (value) => {
+  const handleDigitClick = value => {
     let newResult = result + value;
     if (newResult.startsWith("0") && newResult.length > 1) {
       setResult(newResult.substring(1));
     } else {
       setResult(newResult);
+    }
+  }
+
+  const handleEqualClick = () => {
+    setResult(eval(result).toString(10));
+  }
+
+  const handleOperandClick = value => {
+    if (result == '0') {
+      return;
+    } 
+
+    const lastChar = result.slice(-1);
+    if (lastChar >= '0' && lastChar <= '9') {
+      setResult(result + value);
+    } else {
+      setResult(result.slice(0, -1) + value);
     }
   }
 
@@ -119,13 +136,13 @@ export default function Home() {
         </Stack>
 
         <Stack direction="row" spacing={2} sx={{ justifyContent: "center" }}>
-          <Button variant="outlined" onClick={() => handleButtonClick("1")}>
+          <Button variant="outlined" onClick={() => handleDigitClick("1")}>
             1
           </Button>
-          <Button variant="outlined" onClick={() => handleButtonClick("2")}>
+          <Button variant="outlined" onClick={() => handleDigitClick("2")}>
             2
           </Button>
-          <Button variant="outlined" onClick={() => handleButtonClick("3")}>
+          <Button variant="outlined" onClick={() => handleDigitClick("3")}>
             3
           </Button>
           <Button
@@ -144,13 +161,13 @@ export default function Home() {
         </Stack>
 
         <Stack direction="row" spacing={2} sx={{ justifyContent: "center" }}>
-          <Button variant="outlined" onClick={() => handleButtonClick("4")}>
+          <Button variant="outlined" onClick={() => handleDigitClick("4")}>
             4
           </Button>
-          <Button variant="outlined" onClick={() => handleButtonClick("5")}>
+          <Button variant="outlined" onClick={() => handleDigitClick("5")}>
             5
           </Button>
-          <Button variant="outlined" onClick={() => handleButtonClick("6")}>
+          <Button variant="outlined" onClick={() => handleDigitClick("6")}>
             6
           </Button>
           <Button
@@ -162,7 +179,7 @@ export default function Home() {
                 backgroundColor: "#f57c00",
               },
             }}
-            onClick={() => setResult("-")}
+            onClick={() => handleOperandClick("-")}
           >-
           </Button>
         </Stack>
@@ -172,13 +189,13 @@ export default function Home() {
           spacing={2}
           sx={{ justifyContent: "space-between" }}
         >
-          <Button variant="outlined" onClick={() => handleButtonClick("7")}>
+          <Button variant="outlined" onClick={() => handleDigitClick("7")}>
             7
           </Button>
-          <Button variant="outlined" onClick={() => handleButtonClick("8")}>
+          <Button variant="outlined" onClick={() => handleDigitClick("8")}>
             8
           </Button>
-          <Button variant="outlined" onClick={() => handleButtonClick("9")}>
+          <Button variant="outlined" onClick={() => handleDigitClick("9")}>
             9
           </Button>
           <Button
@@ -190,7 +207,7 @@ export default function Home() {
                 backgroundColor: "#f57c00",
               },
             }}
-            onClick={() => handleButtonClick("+")}>
+            onClick={() => handleOperandClick("+")}>
             +
           </Button>
         </Stack>
@@ -200,10 +217,10 @@ export default function Home() {
           spacing={2}
           sx={{ justifyContent: "space-between" }}
         >
-          <Button variant="outlined" onClick={() => handleButtonClick("0")}>
+          <Button variant="outlined" onClick={() => handleDigitClick("0")}>
             0
           </Button>
-          <Button variant="outlined" onClick={() => handleButtonClick(".")}>
+          <Button variant="outlined" onClick={() => handleDigitClick(".")}>
             .
           </Button>
 
@@ -220,6 +237,7 @@ export default function Home() {
                 backgroundColor: "#f57c00",
               },
             }}
+            onClick={handleEqualClick}
 
           >
             =
