@@ -25,7 +25,7 @@ export default function Home() {
   }
 
   const handleOperandClick = value => {
-    if (result == '0') {
+    if (result == '0'&& value !== '-') {
       return;
     } 
 
@@ -45,6 +45,16 @@ export default function Home() {
      setResult (0);
   }
 }
+
+const handlePercentClick = () => {
+  try {
+    const currentValue = eval(result);
+    const percentValue = currentValue / 100;
+    setResult(percentValue.toString());
+  } catch (error) {
+    setResult("Error");
+  }
+};
 
   return (
     <Box
@@ -103,7 +113,7 @@ export default function Home() {
                 backgroundColor: "#f57c00",
               },
             }}
-            onClick={() => setResult("/")}
+            onClick={() => handleOperandClick("/")}
           >
             /
           </Button>
@@ -116,7 +126,7 @@ export default function Home() {
                 backgroundColor: "#f57c00",
               },
             }}
-            onClick={() => setResult("*")}
+            onClick={() => handleOperandClick("*")}
           >
             *
           </Button>
@@ -154,7 +164,7 @@ export default function Home() {
                 backgroundColor: "#f57c00",
               },
             }}
-              onClick={() => setResult("%")}
+              onClick={() => handlePercentClick("%")}
           >
             %
           </Button>
