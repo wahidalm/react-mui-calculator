@@ -1,4 +1,5 @@
 "use client";
+import { useRef, useEffect } from "react";
 import { useState } from "react";
 import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
@@ -10,6 +11,13 @@ import BackspaceIcon from "@mui/icons-material/Backspace";
 
 export default function Home() {
   const [result, setResult] = useState("0");
+  const displayRef = useRef(null);
+
+  useEffect(() => {
+    if (displayRef.current) {
+      displayRef.current.scrollTop = displayRef.current.scrollHeight;
+    }
+  }, [result]);
 
   const handleDigitClick = value => {
     let newResult = result + value;
@@ -23,19 +31,35 @@ export default function Home() {
   const handleEqualClick = () => {
     setResult(eval(result).toString(10));
   }
+  // try {
+  //     const calculationString = result.replaceAll('\n', '');
+  //     const evalResult = new Function('return ' + calculationString)();
+  //     setResult(evalResult.toString());
+  //   } catch (error) {
+  //     setResult("Error");
+  //   }
+  // };
 
-  const handleOperandClick = value => {
-    if (result == '0'&& value !== '-') {
-      return;
-    } 
-
-    const lastChar = result.slice(-1);
-    if (lastChar >= '0' && lastChar <= '9') {
-      setResult(result + value);
-    } else {
-      setResult(result.slice(0, -1) + value);
-    }
+  const handleOperandClick = (value) => {
+  if (result === '0' && value === '-') {
+    setResult('-');
+    return;
   }
+  if (result === '0') {
+    return;
+  }
+
+  setResult((prevResult) => {
+    const trimmedResult = prevResult.trim();
+    const lastChar = trimmedResult.slice(-1);
+
+    if (['+', '-', '*', '/'].includes(lastChar)) {
+      return trimmedResult.slice(0, -1)+ '\n' + value ;
+    } else {
+      return trimmedResult + '\n' + value;
+    }
+  });
+};
 
   const handleBackspace = () => {
     let newResult = result;
@@ -45,6 +69,19 @@ export default function Home() {
      setResult (0);
   }
 }
+
+const handleClearClick = () => {
+    setResult((prevResult) => {
+      const lastNewlineIndex = prevResult.lastIndexOf('\n');
+
+      if (lastNewlineIndex !== -1) {
+        const newResult = prevResult.slice(0, lastNewlineIndex);
+        return newResult === '' ? '0' : newResult;
+      } else {
+        return '0';
+      }
+    });
+  };
 
 const handlePercentClick = () => {
   try {
@@ -61,10 +98,11 @@ const handlePercentClick = () => {
       display="flex"
       alignItems="center"
       justifyContent="center"
-      sx={{ minHeight: "100vh" }}
+      sx={{ minHeight: "100vh"}}
     >
-      <Stack direction="column" spacing={2}>
+      <Stack direction="column" spacing={2} sx={{ width: 300 }}>
         <Paper
+          ref={displayRef}
           elevation={3}
           sx={{
             padding: 2,
@@ -72,10 +110,13 @@ const handlePercentClick = () => {
             backgroundColor: "#696969",
             color: "#f000000",
             overflow: "hidden",
+            overflowY: "auto",
             minHeight: 50,
             display: "flex",
             alignItems: "center",
+            textAlign: "flex-end",
             justifyContent: "flex-end",
+            height: '7rem', 
           }}
         >
           <Box sx={{ justifyContent: "flex-end", width: "100%" }}>
@@ -84,9 +125,16 @@ const handlePercentClick = () => {
               align="right"
               fontFamily="monospace"
               fontWeight="bold"
+              overflow-wrap= "break-word"
+              width= "100%"
+              whiteSpace= 'pre-wrap'
+              sx={{
+                overflowWrap: "break-word",
+                width: "100%",
+                whiteSpace: "pre-wrap"
+              }}
             >
-              {" "}
-              {result}{" "}
+              {" "}{result}{" "}
             </Typography>
           </Box>
         </Paper>
@@ -139,7 +187,7 @@ const handlePercentClick = () => {
                 backgroundColor: "#f57c00",
               },
             }}
-            onClick={() => setResult("C")}
+            onClick={() => handleClearClick()}
           >
             C
           </Button>
