@@ -19,18 +19,18 @@ export default function Home() {
     }
   }, [result]);
 
-  const handleDigitClick = value => {
+  const handleDigitClick = (value) => {
     let newResult = result + value;
     if (newResult.startsWith("0") && newResult.length > 1) {
       setResult(newResult.substring(1));
     } else {
       setResult(newResult);
     }
-  }
+  };
 
   const handleEqualClick = () => {
     setResult(eval(result).toString(10));
-  }
+  };
   // try {
   //     const calculationString = result.replaceAll('\n', '');
   //     const evalResult = new Function('return ' + calculationString)();
@@ -40,65 +40,82 @@ export default function Home() {
   //   }
   // };
 
+  //   const handleOperandClick = (value) => {
+  //   if (result === '0' && value === '-') {
+  //     setResult('-');
+  //     return;
+  //   }
+  //   if (result === '0') {
+  //     return;
+  //   }
+
+  //   setResult((prevResult) => {
+  //     const trimmedResult = prevResult.trim();
+  //     const lastChar = trimmedResult.slice(-1);
+
+  //     if (['+', '-', '*', '/'].includes(lastChar)) {
+  //       return trimmedResult.slice(0, -1)+ '\n' + value ;
+  //     } else {
+  //       return trimmedResult + '\n' + value;
+  //     }
+  //   });
+  // };
+
   const handleOperandClick = (value) => {
-  if (result === '0' && value === '-') {
-    setResult('-');
-    return;
-  }
-  if (result === '0') {
-    return;
-  }
-
-  setResult((prevResult) => {
-    const trimmedResult = prevResult.trim();
-    const lastChar = trimmedResult.slice(-1);
-
-    if (['+', '-', '*', '/'].includes(lastChar)) {
-      return trimmedResult.slice(0, -1)+ '\n' + value ;
-    } else {
-      return trimmedResult + '\n' + value;
+    if (result === "0" && value === "-") {
+      setResult("-");
+      return;
     }
-  });
-};
+    if (result === "0") {
+      return;
+    }
+
+    const lastChar = result.slice(-1);
+    if (lastChar >= "0" && lastChar <= "9") {
+      setResult(result + "\n" + value);
+    } else {
+      setResult(result.slice(0, -1) + value);
+    }
+  };
 
   const handleBackspace = () => {
     let newResult = result;
-    if (newResult.length>1) {
-      setResult (newResult.slice(0, -1));
-  } else {
-     setResult (0);
-  }
-}
+    if (newResult.length > 1) {
+      setResult(newResult.slice(0, -1));
+    } else {
+      setResult(0);
+    }
+  };
 
-const handleClearClick = () => {
-    setResult((prevResult) => {
-      const lastNewlineIndex = prevResult.lastIndexOf('\n');
+  const handleClearClick = () => {
+    setResult((value) => {
+      const lastNewline = value.lastIndexOf("\n");
 
-      if (lastNewlineIndex !== -1) {
-        const newResult = prevResult.slice(0, lastNewlineIndex);
-        return newResult === '' ? '0' : newResult;
+      if (lastNewline !== -1) {
+        const newResult = value.slice(0, lastNewline);
+        return newResult === "" ? "0" : newResult;
       } else {
-        return '0';
+        return "0";
       }
     });
   };
 
-const handlePercentClick = () => {
-  try {
-    const currentValue = eval(result);
-    const percentValue = currentValue / 100;
-    setResult(percentValue.toString());
-  } catch (error) {
-    setResult("Error");
-  }
-};
+  const handlePercentClick = () => {
+    try {
+      const currentValue = eval(result);
+      const percentValue = currentValue / 100;
+      setResult(percentValue.toString());
+    } catch (error) {
+      setResult("Error");
+    }
+  };
 
   return (
     <Box
       display="flex"
       alignItems="center"
       justifyContent="center"
-      sx={{ minHeight: "100vh"}}
+      sx={{ minHeight: "100vh" }}
     >
       <Stack direction="column" spacing={2} sx={{ width: 300 }}>
         <Paper
@@ -109,14 +126,10 @@ const handlePercentClick = () => {
             textAlign: "right",
             backgroundColor: "#696969",
             color: "#f000000",
-            overflow: "hidden",
+            overflow: "auto",
             overflowY: "auto",
             minHeight: 50,
-            display: "flex",
-            alignItems: "center",
-            textAlign: "flex-end",
-            justifyContent: "flex-end",
-            height: '7rem', 
+            height: "7rem",
           }}
         >
           <Box sx={{ justifyContent: "flex-end", width: "100%" }}>
@@ -125,16 +138,17 @@ const handlePercentClick = () => {
               align="right"
               fontFamily="monospace"
               fontWeight="bold"
-              overflow-wrap= "break-word"
-              width= "100%"
-              whiteSpace= 'pre-wrap'
+              overflow-wrap="break-word"
+              width="100%"
+              whiteSpace="pre-wrap"
               sx={{
                 overflowWrap: "break-word",
                 width: "100%",
-                whiteSpace: "pre-wrap"
+                whiteSpace: "pre-wrap",
               }}
             >
-              {" "}{result}{" "}
+              {" "}
+              {result}{" "}
             </Typography>
           </Box>
         </Paper>
@@ -212,7 +226,7 @@ const handlePercentClick = () => {
                 backgroundColor: "#f57c00",
               },
             }}
-              onClick={() => handlePercentClick("%")}
+            onClick={() => handlePercentClick("%")}
           >
             %
           </Button>
@@ -238,7 +252,8 @@ const handlePercentClick = () => {
               },
             }}
             onClick={() => handleOperandClick("-")}
-          >-
+          >
+            -
           </Button>
         </Stack>
 
@@ -265,7 +280,8 @@ const handlePercentClick = () => {
                 backgroundColor: "#f57c00",
               },
             }}
-            onClick={() => handleOperandClick("+")}>
+            onClick={() => handleOperandClick("+")}
+          >
             +
           </Button>
         </Stack>
@@ -282,7 +298,7 @@ const handlePercentClick = () => {
             .
           </Button>
 
-          <IconButton color="primary" onClick={handleBackspace} >
+          <IconButton color="primary" onClick={handleBackspace}>
             <BackspaceIcon />
           </IconButton>
 
@@ -296,7 +312,6 @@ const handlePercentClick = () => {
               },
             }}
             onClick={handleEqualClick}
-
           >
             =
           </Button>
